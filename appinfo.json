@@ -4,14 +4,14 @@
         ""
     ],
     "companyName": "Joe Pfeiffer",
-    "longName": "Curve",
+    "longName": "Pebble Sketch",
     "projectType": "native",
     "resources": {
         "media": [
             {
                 "file": "images/Icon.png",
                 "menuIcon": true,
-                "name": "BUILDINGS_ICON",
+                "name": "PENCIL_ICON",
                 "type": "png"
             },
             {
@@ -22,7 +22,7 @@
         ]
     },
     "sdkVersion": "2",
-    "shortName": "Curve",
+    "shortName": "Pebble Sketch",
     "uuid": "406634b8-62ce-426b-b7b1-b8a0361f5a5f",
     "versionCode": 1,
     "versionLabel": "1.0",

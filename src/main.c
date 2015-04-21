@@ -181,7 +181,7 @@ static void render(Layer *layer, GContext *ctx) {
 //   rect.size.w = 50;
   graphics_context_set_stroke_color(ctx, GColorBlack);
 //   graphics_draw_rect(ctx, rect);
-  for(uint i = 0; i < sizeof(points); i++) {
+  for(int i = 0; i < 1000; i++) {
     coords.x = points[i].pos_x;
     coords.y = points[i].pos_y;
     graphics_draw_pixel(ctx, coords);
