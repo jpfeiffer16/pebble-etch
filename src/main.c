@@ -26,12 +26,17 @@ GBitmap *bitmap;
 int travel_direction = 0;
 
 int pos_x = 1;
-
 int pos_y = 1;
+int prev_pos_x = 1;
+int prev_pos_y = 1;
 
-int point_counter = 0;
+int point_counter = 1;
 
-DrawPoints points[2000];
+//DrawPoints points[2000];
+
+
+int line_points_len = 1000;
+LinePoints line_points[1000];
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 //   menu_window = window_create();
@@ -44,22 +49,43 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   } else {
     travel_direction = 0;
   }
+  point_counter++;
+  line_points[point_counter].first_pos_x = line_points[point_counter - 1].second_pos_x;
+  line_points[point_counter].first_pos_y = line_points[point_counter - 1].second_pos_y;
+  line_points[point_counter].second_pos_x = line_points[point_counter - 1].second_pos_x;
+  line_points[point_counter].second_pos_y = line_points[point_counter - 1].second_pos_y;
   vibes_short_pulse();
 }
 
 static void save_point() {
-  points[point_counter].pos_x = pos_x;
-  points[point_counter].pos_y = pos_y;
-  point_counter++;
+//   points[point_counter].pos_x = pos_x;
+//   points[point_counter].pos_y = pos_y;
+//   point_counter++;
+  
+}
+
+static void update_point () {
+//   line_points[point_counter];
+}
+
+static int get_first_null() {
+  for (int i = 0; i <= line_points_len; i++) {
+    if (line_points[i].first_pos_y == 0) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
   switch(travel_direction) {
     case 0:
-        pos_x++;
+//         pos_x++;
+      line_points[point_counter].second_pos_x++;
       break;
     case 1:
-        pos_y--;
+//         pos_y--;
+      line_points[point_counter].second_pos_y--;
       break;
   }
   save_point();
@@ -71,10 +97,12 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
     case 0:
 //       siprintf(status, "%g", (double)pos_x);
 //       text_layer_set_text(text_layer, status);
-        pos_x--;
+//         pos_x--;
+      line_points[point_counter].second_pos_x--;
       break;
     case 1:
-        pos_y++;
+//         pos_y++;
+      line_points[point_counter].second_pos_y++;
       break;
   }
   save_point();
@@ -84,7 +112,8 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
 static void render(Layer *layer, GContext *ctx) {
 //   GBitmap *draw;
 //   draw = graphics_capture_frame_buffer(ctx);
-  GPoint coords;
+  GPoint first_point;
+  GPoint second_point;
 //   coords.x = pos_x;
 //   coords.y = pos_y;
 //   GRect rect;
@@ -92,10 +121,13 @@ static void render(Layer *layer, GContext *ctx) {
 //   rect.size.w = 50;
   graphics_context_set_stroke_color(ctx, GColorBlack);
 //   graphics_draw_rect(ctx, rect);
-  for(int i = 0; i < 2000; i++) {
-    coords.x = points[i].pos_x;
-    coords.y = points[i].pos_y;
-    graphics_draw_pixel(ctx, coords);
+  for(int i = 0; i <= point_counter; i++) {
+    first_point.x = line_points[i].first_pos_x;
+    first_point.y = line_points[i].first_pos_y;
+    second_point.x = line_points[i].second_pos_x;
+    second_point.y = line_points[i].second_pos_y;
+    graphics_draw_line(ctx, first_point, second_point);
+//     graphics_draw_pixel(ctx, coords);
   }
 //   graphics_draw_pixel(ctx, coords);
 //   graphics_release_frame_buffer(ctx, draw);
@@ -112,6 +144,9 @@ static void click_config_provider(void *context) {
 }
 
 void handle_init(void) {
+  line_points[1].second_pos_x = 0;
+  line_points[1].second_pos_y = 0;
+  
   my_window = window_create();
 
   Layer *window_layer = window_get_root_layer(my_window);
